@@ -13,6 +13,13 @@ export default function(state = initialState, action) {
         todo_list: [ ...state.todo_list, { id, task }]
       };
     }
+    case DELETE_TODO: {
+      const { id } = action.payload
+      return {
+        ...state,
+        todo_list: state.todo_list.filter((todo) => todo.id != id)
+      };
+    }
     default:
       return state;
   }

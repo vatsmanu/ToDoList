@@ -1,17 +1,36 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Constants from 'expo-constants';
 
-import { connect } from 'react-redux';
-import { addTodo } from '../redux/actions';
 import Header from '../components/Header';
+import ButtonIcon from '../components/ButtonIcon';
 
-const TodoApp = ({ todo_list, addTodo }) => {
+import { connect } from 'react-redux';
+import { addTodo, deleteTodo } from '../redux/actions';
+
+const TodoApp = ({ todo_list, addTodo, deleteTodo }) => {
   const [task, setTask] = React.useState('');
 
   const handleAddTodo = () => {
     addTodo(task)
     setTask('')
+  }
+
+  const showAlert = (id) => {
+    Alert.alert(  
+      'Alert',  
+      'Are you sure you want to delete?',  
+      [  
+          {  
+              text: 'Cancel',    
+              style: 'cancel',  
+          },  
+          {text: 'OK', onPress: () => deleteTodo(id)},  
+      ]  
+  );  
+  }
+  const handleDeleteTodo = (id) => {
+    showAlert(id);
   }
 
   return (
@@ -38,6 +57,7 @@ const TodoApp = ({ todo_list, addTodo }) => {
                 <Text>
                     {item.task}
                 </Text>
+                <ButtonIcon iconName="close" color="red" onPress={() => handleDeleteTodo(item.id)} />
               </View>
             </>
           );
@@ -57,7 +77,7 @@ const styles = StyleSheet.create({
   itemCard: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 10,
+    paddingHorizontal: 10,
     borderRadius: 5,
     margin: 10,
     flexDirection: 'row',
@@ -99,7 +119,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = { addTodo }
+const mapDispatchToProps = { addTodo, deleteTodo }
 
 export default connect(
   mapStateToProps,
